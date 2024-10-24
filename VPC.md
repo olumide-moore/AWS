@@ -8,6 +8,8 @@ A VPC is a virtual private cloud which works like a private network to isolate t
 - You can launch your AWS resources, such as Amazon EC2 instances, into your VPC.
 - You can configure your VPC; you can select its IP address range, create subnets, and configure route tables, network gateways, and security settings.
 
+![VPC Architecture](https://github.com/user-attachments/assets/12a8b17d-4650-4ded-afbe-2f6197f1f75a)
+
 
 ## VPC Components
 - **Subnets**: A range of IP addresses in your VPC, used to increase security and efficiency of network communications. A subnet must reside within a single Availability Zone. You can think of them like postal codes, used for routing packages from one location to another.  A public subnet is exposed to the public, while a private subnet is not. You have to create a subnet within a VPC to launch instances.
@@ -71,9 +73,7 @@ To make the public route table public, you need to add a route to the internet g
 - Target: Select the internet gateway you created earlier
 
 
-
-
-# Create EC2 Instance in your VPC
+## Create EC2 Instance in your VPC
 - On the EC2 dashboard, click 'Launch Instance'
 - Choose an Amazon Machine Image (AMI) (e.g. Amazon Linux 2 AMI)
 - Choose an instance type (e.g. t2.micro)
@@ -81,4 +81,47 @@ To make the public route table public, you need to add a route to the internet g
   - Network: Choose the VPC you created earlier
   - Subnet: Choose the public subnet you created earlier
   - Auto-assign Public IP: Enable
-- firewall: Choose an existing security group or create a new one
+- firewall: Create a new security group
+- Review and Launch
+
+## Lauch an EC2 instance in a private subnet
+- On the EC2 creation, follow same steps, but choose the private subnet, disable auto-assign public IP and create a new security group (e.g. sgprivate), leave the type aas SSH and source type as Anywhere
+
+
+### To connect to the private instance from the public instance
+Although, you cannot access a private server on the internet or outside the VPC, but you can access the public server within the same VPC and SSH into the privater server from there.
+- Use an existing key pair or create a new key pair 
+    - A key pair, consisting of a public key and a private key, is a set of security credentials that you use to prove your identity when connecting to an Amazon EC2 instance. For Linux instances, the private key allows you to securely SSH into your instance. For Windows instances, the private key is required to decrypt the administrator password, which you then use to connect to your instance. Amazon EC2 stores the public key on your instance, and you store the private key. 
+    - To Create a key pair:
+        - On the EC2 dashboard, click 'Key Pairs' under 'Network & Security'
+        - Click 'Create Key Pair'
+        - Give your key pair a name (e.g. key)
+        - Click 'Create'
+        - Download the key pair and store it in a secure location (the key pair must be stored in a secure location, as it can be used to access your instances and you cannot download it again!)
+
+- On your local computer, run the following command to copy the key pair to the public instance
+    - `sudo scp -i key.pem key.pem ec2-user@[public-instance-ip]:/home/ec2-user`   (replace key.pem with your key pair and public-instance-ip with the public instance IP)
+        - If you do not have scp installed, you can install it with `apt-get update && apt-get install -y openssh-client`
+        - If you get Unprotected private key file error, run `chmod 600 key.pem` to change the permissions of the key pair file
+    -  `ssh -i key.pem ec2-user@[private-instance-ip]` (replace key.pem with your key pair and private-instance-ip with the private instance IP)
+Even though we can access the private server from the public server, you can't access internet from within the private server (so you can't run command like `apt-get update` or `curl google.com` from the private server), unless you use a NAT Gateway.
+
+## NAT Gateway
+NAT Gateway (Network Address Translation) can be used to enable instances in a private subnet to connect to services outside the VPC (to access the internet), but prevent external services to initiate a connection to the instances.
+### Creating a NAT Gateway in the public subnet (because the public subnet has internet access)
+- On the VPC dashboard, choose 'NAT Gateways'
+- Click 'Create NAT Gateway'
+- Give your NAT Gateway a name (optional) and choose the public subnet
+- Select Public for Connectivity type
+- Click 'Allocate Elastic IP' and click 'Create NAT Gateway'
+### Update the route table for the private subnet to use the NAT Gateway
+- On the Route Tables page, select the private route table, under the Routes tab, click 'Edit routes'
+- Click 'Add route'
+    - Destination: 0.0.0.0/0
+    - Target: Select the NAT Gateway you created earlier
+
+
+## NACLs (Network Access Control List) 
+NACLs is like a virtual firewall that protects the subnet. It is another layer of protection around the subnet. It is stateless (meaning if you allow an incoming request, you have to also have an outbound rule to allow it out, it does not remember the state of the request). 
+- A network access control list (ACL) is an optional layer of security for your VPC that acts as a firewall for controlling traffic in and out of one or more subnets. You might set up network ACLs with rules similar to your security groups in order to add an additional layer of security to your VPC.
+- By default, network ACLs allow all inbound and outbound traffic. You can create custom network ACLs with rules to allow or deny traffic based on protocol, port, and source or destination IP address.  But most of the time, people use security groups to control traffic in and out of the instances, instead of NACLs to control traffic in and out of the subnet. A security group is stateful, meaning if you allow an incoming request, you do not have to have an outbound rule to allow it out, it remembers the state of the request.
