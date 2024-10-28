@@ -125,3 +125,8 @@ NAT Gateway (Network Address Translation) can be used to enable instances in a p
 NACLs is like a virtual firewall that protects the subnet. It is another layer of protection around the subnet. It is stateless (meaning if you allow an incoming request, you have to also have an outbound rule to allow it out, it does not remember the state of the request). 
 - A network access control list (ACL) is an optional layer of security for your VPC that acts as a firewall for controlling traffic in and out of one or more subnets. You might set up network ACLs with rules similar to your security groups in order to add an additional layer of security to your VPC.
 - By default, network ACLs allow all inbound and outbound traffic. You can create custom network ACLs with rules to allow or deny traffic based on protocol, port, and source or destination IP address.  But most of the time, people use security groups to control traffic in and out of the instances, instead of NACLs to control traffic in and out of the subnet. A security group is stateful, meaning if you allow an incoming request, you do not have to have an outbound rule to allow it out, it remembers the state of the request.
+
+
+
+
+https://youtu.be/2doSoMN2xvI?si=3l4ahNVIxzNYR4WT
