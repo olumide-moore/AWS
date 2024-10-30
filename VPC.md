@@ -10,6 +10,7 @@ A VPC is a virtual private cloud which works like a private network to isolate t
 
 ![VPC Architecture](https://github.com/user-attachments/assets/12a8b17d-4650-4ded-afbe-2f6197f1f75a)
 
+![VPC Architecture2](https://github.com/user-attachments/assets/3caa8a0d-7df4-4476-8004-aae87ccbb403)
 
 ## VPC Components
 - **Subnets**: A range of IP addresses in your VPC, used to increase security and efficiency of network communications. A subnet must reside within a single Availability Zone. You can think of them like postal codes, used for routing packages from one location to another.  A public subnet is exposed to the public, while a private subnet is not. You have to create a subnet within a VPC to launch instances.
@@ -126,7 +127,16 @@ NACLs is like a virtual firewall that protects the subnet. It is another layer o
 - A network access control list (ACL) is an optional layer of security for your VPC that acts as a firewall for controlling traffic in and out of one or more subnets. You might set up network ACLs with rules similar to your security groups in order to add an additional layer of security to your VPC.
 - By default, network ACLs allow all inbound and outbound traffic. You can create custom network ACLs with rules to allow or deny traffic based on protocol, port, and source or destination IP address.  But most of the time, people use security groups to control traffic in and out of the instances, instead of NACLs to control traffic in and out of the subnet. A security group is stateful, meaning if you allow an incoming request, you do not have to have an outbound rule to allow it out, it remembers the state of the request.
 
+## PrivateLink
+AWS PrivateLink is a service that enables you to privately access services hosted on AWS in a highly available and scalable manner, without requiring public IPs or internet gateways or NAT devices.
+To use PrivateLink, you need to create an interface VPC endpoint in your VPC, which is a network interface that you can attach to an instance in your VPC. 
 
 
+AWS Networking Basics For Programmers | Hands On
 
 https://youtu.be/2doSoMN2xvI?si=3l4ahNVIxzNYR4WT
+
+
+AWS re:Invent 2023 - AWS networking foundations (NTA307)
+
+https://youtu.be/8nNurTFy-h4?si=B5p9rhGJy3pNLnLN
