@@ -132,6 +132,23 @@ AWS PrivateLink is a service that enables you to privately access services hoste
 To use PrivateLink, you need to create an interface VPC endpoint in your VPC, which is a network interface that you can attach to an instance in your VPC. 
 
 
+
+
+## VPC peering
+VPC peering is creating a network connection between two VPCs. You have a source VPC and destination VPC. You create a network connection with the help of private IP space.
+The VPCs could connect accross two AWS account and accross regions.
+It is a bidirectional service. Whenever there is a link between two VPCs, the traffic will flow both directions to and fro.
+No overlappinng IP addresses to prevent addressing conflict.
+No transitive routing. VPC A connected to B and B connected to C doesn't mean A has access to C.
+
+![VPC Peering](https://github.com/user-attachments/assets/cf220ea3-6698-431e-93b2-a250a391526c)
+
+
+## AWS Transit Gateway 
+is a transitive hub for our networking topology. You can attach multiple VPCs to a Transit Gateway, and all the attachments can communicate with each other instead of having multipe complex peering relationships. It acts as a cloud router.
+
+
+
 AWS Networking Basics For Programmers | Hands On
 
 https://youtu.be/2doSoMN2xvI?si=3l4ahNVIxzNYR4WT
